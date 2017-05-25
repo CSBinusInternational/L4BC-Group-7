@@ -1,7 +1,7 @@
 <html>
    <head>
       <title>Armo</title>
-      <script src= "babylon.js"></script>
+      <script src= "babylon.custom.js"></script>
        <script src="babylonObjLoader.js"></script>
      <style>
          html, body, div, canvas {
@@ -14,7 +14,9 @@
    </head>
    <body>
        <canvas id="canvas"></canvas>
-      <script>
+
+
+       <script>
 
  
 // Check support
@@ -25,22 +27,9 @@ if (!BABYLON.Engine.isSupported()) {
               var engine = new BABYLON.Engine(canvas, true);
           
           
-         
+         //scene setup
           
           var scene = new BABYLON.Scene(engine);
-    
-
-    var assetsManager = new BABYLON.AssetsManager(scene);
-        var meshTask = assetsManager.addMeshTask("char", "", "Assets/", "char.obj");
-        engine.loadingUIText = "Your Patience is really appreciated";
-     
-          
-          meshTask.onSuccess=function(task){
-               task.loadedMeshes[0].position = new BABYLON.Vector3(0, 10, 0);
-          }
-   
-    
-  
         
           var camera = new BABYLON.ArcRotateCamera("Camera", 0, 0, 0, BABYLON.Vector3.Zero(), scene);
           camera.setPosition(new BABYLON.Vector3(0,15,-10));
@@ -49,24 +38,87 @@ if (!BABYLON.Engine.isSupported()) {
           var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
           light.intensity=0.7;
               
-            var ground= BABYLON.Mesh.CreateGround("ground1",12,12,2,scene);
+            var ground= BABYLON.Mesh.CreateGround("ground1",100,100,2,scene);
             var matGround=new BABYLON.StandardMaterial("ground1",scene);
               matGround.diffuseTexture=new BABYLON.Texture("grass.jpg",scene);
               ground.material=matGround;
-              
     
-             BABYLON.SceneLoader.ImportMesh("","Assets/", "char.obj", scene, function(newMeshes){
-                 var bone = BABYLON.Mesh.CreateBox("box1",2,scene);
-                 bone.visibility = 0;
-                 newMeshes.parent  = bone;
+    //creation of wall
+     var wall1 = {
+    width: 100,
+    height: 50,
+    depth: 5,
+    
+  };
+    
+    var wall2 = {
+    width: 5,
+    height: 50,
+    depth: 100,
+    
+  };
+    
+    var box1=BABYLON.MeshBuilder.CreateBox("box0",wall1,scene);
+   box1.position.z=50;
+   box1.visibility=0;
+    
+    var box2=BABYLON.MeshBuilder.CreateBox("box2",wall1,scene);
+   box2.position.z=-50;
+   box2.visibility=0; 
+    
+   var box3=BABYLON.MeshBuilder.CreateBox("box3",wall2,scene);
+   box3.position.x=50;
+   box3.visibility=0;
+    
+     var box4=BABYLON.MeshBuilder.CreateBox("box4",wall2,scene);
+   box4.position.x=-50;
+    box4.visibility=0;
+    
+    
+    //Import Main Character
+    BABYLON.SceneLoader.ImportMesh("","/design/", "char.obj", scene, function(newMeshes,particleSystems){
+    var wantedMesh = newMeshes[0];
+     var bone = BABYLON.Mesh.CreateBox("box1",2,scene);
+     bone.visibility = 0;
+     char.parent  = bone;
 });
+    
+    //Import Enemy
+    BABYLON.SceneLoader.ImportMesh("","/design/", "enemy.babylon", scene, function(enemy){
+                 var bone1 = BABYLON.MeshBuilder.CreateBox("bone1",2,scene);
+                 bone1.visibility = 0;
+                 enemy.parent  = bone1;
+               enemy[0].position =new BABYLON.Vector3(10,3,10);
+                
+});
+     
+//Applying collision
         
-   
-      assetsManager.load(); 
+function enableCameraCollision(camera, scene) {
+  // Enable gravity on the scene. Should be similar to earth's gravity. 
+  scene.gravity = new BABYLON.Vector3(0, -0.98, 0);
+  // Enable collisions globally. 
+  scene.collisionsEnabled = true;
+  // Enable collision detection and gravity on the free camera. 
+  camera.checkCollisions = true;
+  camera.applyGravity = true;
+  // Set the player size, the camera's ellipsoid. 
+  camera.ellipsoid = new BABYLON.Vector3(0.4, 0.8, 0.4);
+    //Collisions on ground,main character and enemy
+    ground.checkCollisions = true;
+    char.checkCollisions = true;
+    enemy.checkCollisions = true;
+}
 
+    engine.runRenderLoop(function() {
+        scene.render();
+    });
+
+          
+  
     }
     
-              
+
               /*SCENE END*/
               
               /* Keyboard event start 
