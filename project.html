@@ -75,21 +75,23 @@ if (!BABYLON.Engine.isSupported()) {
     box4.visibility=0;
     
     
-    //Import Main Character
-    BABYLON.SceneLoader.ImportMesh("","/design/", "char.obj", scene, function(newMeshes,particleSystems){
-    var wantedMesh = newMeshes[0];
-     var bone = BABYLON.Mesh.CreateBox("box1",2,scene);
-     bone.visibility = 0;
-     char.parent  = bone;
-});
     
+    //Import Main Character
+    BABYLON.SceneLoader.ImportMesh("","design/", "chara.babylon", scene, function(newMeshes){
+  var char = newMeshes[0];
+   
+    
+});
+
     //Import Enemy
-    BABYLON.SceneLoader.ImportMesh("","/design/", "enemy.babylon", scene, function(enemy){
-                 var bone1 = BABYLON.MeshBuilder.CreateBox("bone1",2,scene);
-                 bone1.visibility = 0;
-                 enemy.parent  = bone1;
-               enemy[0].position =new BABYLON.Vector3(10,3,10);
-                
+    var enemy;
+    BABYLON.SceneLoader.ImportMesh("","design/", "enemy.babylon", scene, function(newMeshes, particleSystems){
+        enemy = newMeshes[1];
+         var bone1 = BABYLON.MeshBuilder.CreateBox("bone1",2,scene);
+         bone1.visibility = 0;
+         enemy.parent  = bone1;
+         enemy.position =new BABYLON.Vector3(10,3,10);
+
 });
      
 //Applying collision
@@ -121,7 +123,7 @@ function enableCameraCollision(camera, scene) {
 
               /*SCENE END*/
               
-              /* Keyboard event start 
+              // Keyboard event start 
               window.onkeydown=function(event){
                   event=event || window.event;
                   var keyCode=event.which ||event.keyCode;
@@ -129,21 +131,21 @@ function enableCameraCollision(camera, scene) {
               
               switch(keyCode){
                   case 87 :
-                      head.position.z+=0.05;
+                      char.position.z+=0.05;
                       break;
                       
                   case 65:
-                      head.position.x-=0.05;
+                      char.position.x-=0.05;
                       break;
                   case 83:
-                      head.position.z -=0.05;
+                      char.position.z -=0.05;
                       break;
                   case 68:
-                      head.position.x +=0.05;
+                      char.position.x +=0.05;
                       break;
                  
               }
-              }; */
+              }; 
               
         /*      engine.runRenderLoop(function(){
                 
