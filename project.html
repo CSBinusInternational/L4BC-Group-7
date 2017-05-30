@@ -101,10 +101,10 @@ var load = function () {
 //Content of the game
 var createGame = function() {
     // Number of lanes
-    var LANE_NUMBER = 3;
+    var laneNum = 4;
     // Space between lanes
     var laneSpace = 5;
-    var LANES_POSITIONS = [];
+    var lanePos = [];
 
     var NOTE_START_POSITION_Z = 100;
 
@@ -141,25 +141,26 @@ var createGame = function() {
         return ending;
     };
 
-    var currentLanePosition = laneSpace * -1 * (LANE_NUMBER/2);
-    for (var i = 0; i<LANE_NUMBER; i++){
-        LANES_POSITIONS[i] = currentLanePosition;
+    var currentLanePosition = laneSpace * -1 * (laneNum/2);
+    for (var i = 0; i<laneNum; i++){
+        lanePos[i] = currentLanePosition;
         createLane(i, currentLanePosition);
         CG.ENDINGS.push(createEnding(i, currentLanePosition));
         currentLanePosition += laneSpace;
     }
 
     // Adjust CG.camera position
-    CG.camera.position.x = LANES_POSITIONS[Math.floor(LANE_NUMBER/2)];
+    CG.camera.position.x = lanePos[Math.floor(laneNum/2)];
 
      // Load enemies
      CG.PUMPKIN.forEach(function (t) {
-     BABYLON.SceneLoader.ImportMesh(t, "assets/", "low-poly-halloween-pumpkin.babylon", CG.scene, function (meshes) {
-     var m = meshes[0];
+    // BABYLON.SceneLoader.ImportMesh(t, "assets/", "low-poly-halloween-pumpkin.babylon", CG.scene, function (meshes) {
+     
+     var m = BABYLON.Mesh.CreateSphere('sphere1', 16, 2, CG.scene);
      m.isVisible = false;
      m.scaling = new BABYLON.Vector3(0.5,0.5,0.5);
      CG.pumpkinMod.push(m);
-     });
+    // });
      });
 
 
@@ -168,7 +169,7 @@ var createGame = function() {
      if (CG.pumpkinMod.length > 0){
      var posZ = NOTE_START_POSITION_Z;
      // random lane
-     var posX = LANES_POSITIONS[Math.floor(Math.random() * LANE_NUMBER)];
+     var posX = lanePos[Math.floor(Math.random() * laneNum)];
 
      var m = CG.pumpkinMod[randomNumber(0,3)];
      var note = m.clone(m.name+CG.totalNum);
@@ -265,6 +266,9 @@ var onKeyDown = function (evt) {
             break;
         case 68 : //'D'
             currentEnding = 2;
+            break;
+        case 70: //'F'
+            currentEnding = 3;
             break;
     }
     if (currentEnding != -1) {
