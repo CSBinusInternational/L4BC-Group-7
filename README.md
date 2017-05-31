@@ -1,7 +1,7 @@
 # Armo - Game 
 
 # Overview
-![screenshot](http://imgur.com/a/0y8Ib "screenshot")
+![screenshot](ss.png "screenshot")
  
 # Genre
 	Point Collecting Game
